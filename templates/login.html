@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='main1.css') }}">
+</head>
+<body>
+
+<div class="box"style="background-color:lavender;">
+<table width=100%>
+<tr>
+    <td width=10%>
+    <h1 onclick="toggleSidebar()" style="margin-left:2%;">☰</h1></td>
+<td width=80% align=center><h1><i>Tarzen The Online Mall</i></h1></td>
+{% if session.get('login') %}
+    <td width=50%><lable><div style="font-size:20px;"><a href="/logout">Logout</a></div></label></td>
+ {% elif not session.get('login') %}
+ <td width=50%><lable><div style="font-size:20px;"><a href="/login">Login</a></div></label></td>
+{% endif %}
+</tr>
+</table>
+</div>
+
+
+  <div class="sidebar" id="sidebar">
+    <ul>
+            <li><button class="toggle-btn" onclick="toggleSidebar()">Close</button></li>
+            <li><i class="fas fa-home"></i><span><a href="/home">Home</a></span></li>
+      {%if (session.get('user_type')=='admin')%}
+      <li><i class="fas fa-home"></i><span><a href="/add-product">Add Products</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/add-adds">Add Adds</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href='/select/product'>Select Products</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/orders'>Select Orders</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/user'>Select Users</a></span></li>
+      {%elif (session.get('user_type')=='user')%}
+      
+      
+      <li><i class="fas fa-home"></i><span><a href="/select/cart">Cart</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/select/orders">Current Orders</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/update_info">Update Info</a></span></li>
+      {%endif%}
+    </ul>
+  
+  </div>
+  <h2 style="margin-top:auto; text-align:center;"><i><b>Login</b></i></h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<form method="POST" action="/login">
+    <div class="w3-container">
+        <div class="input-container">
+            <label>Mobile Number: </label>
+                <input type="number" name="mno" required class='input-box'><br>
+            <label>Password:</label>
+                <input type="password" name="ano" required><br>
+                <input type="submit" value="Submit">
+            <p style="font-size: 80%; text-align:center;">
+                <a href="/forgot"><font style="color:red;">Forgot password...</font></a><br>
+                <a href="/new-account">if you haven't an account click me please</a></p>
+        </div>
+     </div>
+</form>
+
+
+<footer class='box'>
+  &copy; {{year}} Tarzan the online mall. All Rights Reserved.<br>Created by Shivraj Patil.
+</footer>
+</div>
+</body>
+<script src="{{ url_for('static', filename='main1.js') }}"></script>
+<script>
+setTimeout(() => {
+    document.querySelectorAll('.flash-message')
+        .forEach(msg => msg.remove());
+}, 3000);
+</script>
+
+</html>

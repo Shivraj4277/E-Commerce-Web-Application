@@ -1,0 +1,128 @@
+<html>
+<head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='main1.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+
+</head>
+<body>
+
+
+
+
+<div class="box"style="background-color:lavender;">
+<table width=100%>
+<tr>
+    <td width=10%>
+    <h2 onclick="toggleSidebar()" style="margin-left:2%;">☰</h2></td>
+<td width=80% align=center><h2><i>Tarzen The Online Mall</i></h2></td>
+{% if session.get('login') %}
+    <td width=50%><lable><div style="font-size:20px;"><a href="/logout">Logout</a></div></label></td>
+ {% elif not session.get('login') %}
+ <td width=50%><lable><div style="font-size:20px;"><a href="/login">Login</a></div></label></td>
+{% endif %}
+</tr>
+</table>
+
+    <div class="input-container">
+      <!-- Search input -->
+      <input type="text" placeholder="Search Product.." id="myInput" onkeyup="myFunction()" class="input-box">
+    </div>
+
+    <!-- Table initially hidden --> 
+    <table class="w3-table-all w3-margin-top table" id="myTable" style="display: none; position: absolute; top: auto; margin:%; width:95%; z-index: 1000;">
+      {% for i in products %}
+      <tr class="tr">
+        <td class="td"><a href="/info/{{i.pid}}" >{{i.pname}}</a></td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+</div>
+
+        
+  <div class="sidebar" id="sidebar">
+    <ul>
+            <li><button class="toggle-btn" onclick="toggleSidebar()">Close</button></li>
+            <li><i class="fas fa-home"></i><span><a href="/home">Home</a></span></li>
+      {%if (session.get('user_type')=='admin')%}
+      <li><i class="fas fa-home"></i><span><a href="/add-product">Add Products</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/add-adds">Add Adds</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href='/select/product'>Select Products</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/orders'>Select Orders</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/user'>Select Users</a></span></li>
+      {%elif (session.get('user_type')=='user')%}
+      
+      
+      <li><i class="fas fa-home"></i><span><a href="/select/cart">Cart</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/select/orders">Current Orders</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/update_info">Update Info</a></span></li>
+      {%endif%}
+    </ul>
+  
+  </div>  
+  
+<div class="carousel-container">
+  <!-- Carousel -->
+  <div class="carousel">
+  {% for img in images %}
+    <div class="card1">      
+  <img src="{{ url_for('static', filename='adds/' + img) }}">
+    </div>
+   {% endfor %}
+  </div>
+  <div class="dots-container"></div>
+</div>
+
+
+{% for j in c %}
+
+
+<div class="box">
+
+<div class="card-details">
+    <div class='f60'>{{j.replace('_',' ')}}</div>
+</div>
+
+    <div class="card-slider">
+    {% for i in products %}
+{%if i.pcategory==j%}
+        <div class="card">
+        
+        <a href='/info/{{i.pid}}'>
+            <img src="/static/product/{{i.discription.main.images[0]}}" alt="Product">
+            <div class="card-details">
+                <h4>{{i.pname}}</h4>
+                <table width="100%">
+                    <tr>
+                        <td class="left td"> -{{i.discount}}%</td>
+                        <td class="middle td">₹{{i.price-i.discount_price}}</td>
+                        <td class="right td"><del><font color="red">₹{{i.price}}</font></del></td>
+                    </tr>
+                </table>
+            </div>
+            </a>
+            
+        </div>   
+        {% endif %}
+ {% endfor %}
+      </div>
+      
+</div>
+
+
+{% endfor %}
+  
+ <div class='box'>
+<a href='/cart/1/1'> for sample</a>
+</div>
+
+<footer class='box'>
+  &copy; {{year}} Tarzan the online mall. All Rights Reserved.<br>Created by Shivraj Patil.
+</footer>
+
+
+
+
+</body>
+<script src="{{ url_for('static', filename='main1.js') }}"></script>
+</html>

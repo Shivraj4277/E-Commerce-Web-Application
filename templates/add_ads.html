@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+
+        <link rel="stylesheet" href="{{ url_for('static', filename='main1.css') }}">
+
+<title>Add Product</title>
+
+<!-- QUILL CSS -->
+<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+<style type="text/css">
+#container {
+    width: 90%;
+    max-width: 600px;
+    margin: 10px auto;
+    border:1px black solid;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ccc;
+}
+.row {
+    display: flex;
+    justify-content: space-between;
+}
+button.form-btn {
+    width: 80%;
+    margin:10px auto;
+    padding:10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-shadow: 1px 2px 7px rgba(0, 0, 0, 0.1);
+}
+.input-box{
+    width: 48% !important;
+    margin:10px;
+    padding:10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-shadow: 1px 2px 7px rgba(0, 0, 0, 0.1);
+}
+.label {
+    width: 48%;
+    margin-top:15px;
+    padding-left:10px;
+    font-size: 20px;
+}
+.input-box:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 7px rgba(0, 128, 0, 0.7);
+    outline: none;
+}
+.ql-toolbar {
+    margin:10px;
+    border-radius:4px;
+    box-shadow: 1px 2px 7px rgba(0, 0, 0, 0.1);
+}
+.ql-container {
+    margin:10px;
+    border-radius:4px;
+    height:200px;
+    box-shadow: 1px 2px 7px rgba(0, 0, 0, 0.1);
+}
+.ql-toolbar button,
+.ql-toolbar select {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 5px !important;
+}
+.ql-font-arial { font-family: Arial, sans-serif; }
+.ql-font-roboto { font-family: 'Roboto', sans-serif; }
+.ql-font-serif { font-family: serif; }
+.ql-font-monospace { font-family: monospace; }
+</style>
+</head>
+
+<body>
+
+<div class="box"style="background-color:lavender;">
+<table width=100%>
+<tr>
+    <td width=10%>
+    <h1 onclick="toggleSidebar()" style="margin-left:2%;">☰</h1></td>
+<td width=80% align=center><h1><i>Tarzen The Online Mall</i></h1></td>
+{% if session.get('login') %}
+    <td width=50%><lable><div style="font-size:20px;"><a href="/logout">Logout</a></div></label></td>
+ {% elif not session.get('login') %}
+ <td width=50%><lable><div style="font-size:20px;"><a href="/login">Login</a></div></label></td>
+{% endif %}
+</tr>
+</table>
+</div>
+
+
+  <div class="sidebar" id="sidebar">
+    <ul>
+            <li><button class="toggle-btn" onclick="toggleSidebar()">Close</button></li>
+            <li><i class="fas fa-home"></i><span><a href="/home">Home</a></span></li>
+      {%if (session.get('user_type')=='admin')%}
+      <li><i class="fas fa-home"></i><span><a href="/add-product">Add Products</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/add-adds">Add Adds</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href='/select/product'>Select Products</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/orders'>Select Orders</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/user'>Select Users</a></span></li>
+      {%elif (session.get('user_type')=='user')%}
+      
+     
+      <li><i class="fas fa-home"></i><span><a href="/select/cart">Cart</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/select/orders">Current Orders</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/update_info">Update Info</a></span></li>
+      {%endif%}
+    </ul>
+  
+  </div>
+  
+<br>      
+<h1 style="text-align:center;"><i>ADD ADDS</i></h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+
+
+<form method="POST" action="/add-adds" enctype="multipart/form-data">
+
+<div class="contaier">
+
+ <div class="row">
+   <label class="label">Image</label>
+</div>
+<div class="row">
+     <input type="file" class="input-box" name="description_image[]" multiple required>
+</div>
+<div class="row">
+    <button type="submit" class="form-btn"><b>Submit</b></button>
+</div>
+</div>
+
+</form>
+
+<footer class='box'>
+  &copy; {{year}} Tarzan the online mall. All Rights Reserved.<br>Created by Shivraj Patil.
+</footer>
+</div>
+
+
+
+<!-- QUILL JS -->
+
+<script>
+
+// -----------------------
+// ALLOWED RATIO CHECK
+// -----------------------
+function isValidRatio(width, height) {
+    let ratio = width / height;
+    if (Math.abs(ratio - 1) < 0.01) return true;        // 1:1
+    if (Math.abs(ratio - (16/9)) < 0.01) return true;  // 16:9
+    return false;
+}
+
+const allowedTypes = [
+    "image/jpeg","image/png","image/gif","image/webp",
+    "video/mp4","video/webm","video/ogg"
+];
+
+// -----------------------
+// FILE INPUT CHANGE (ALL FILE INPUTS)
+// -----------------------
+document.addEventListener("change", function (e) {
+
+    if (e.target.type === "file") {
+
+        const files = Array.from(e.target.files);
+
+        for (let file of files) {
+
+            // TYPE CHECK
+            if (!allowedTypes.includes(file.type)) {
+                alert("❌ Only image or video files allowed!");
+                e.target.value = "";
+                return;
+            }
+
+            // IMAGE RATIO CHECK
+            if (file.type.startsWith("image/")) {
+
+                const img = new Image();
+                img.src = URL.createObjectURL(file);
+
+                img.onload = function () {
+                    if (!isValidRatio(img.width, img.height)) {
+                        alert(
+                            `❌ Invalid Image Ratio!\n\n` +
+                            `File: ${file.name}\n` +
+                            `Allowed: 1:1 or 16:9\n` +
+                            `Your Image: ${img.width} x ${img.height}`
+                        );
+                        e.target.value = "";
+                    }
+                };
+            }
+        }
+    }
+});
+</script>
+<script>
+setTimeout(() => {
+    document.querySelectorAll('.flash-message')
+        .forEach(msg => msg.remove());
+}, 3000);
+</script>
+
+<script src="{{ url_for('static', filename='main1.js') }}"></script>
+</body>
+</html>

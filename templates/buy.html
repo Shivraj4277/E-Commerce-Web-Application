@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='main1.css') }}">
+</head>
+<style type="text/css">
+.container1{
+    width: 95%;
+    max-width: 600px;
+    margin: 0px auto;
+}
+
+/* Row Styling */
+.row {
+    display: flex;
+    justify-content: space-between;
+
+}
+
+/* Input Box Styling */
+.input-box {
+    width: 48%;
+    margin:10px;
+    padding:10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+        box-shadow: 1px 2px 7px rgba(0, 0, 0, 0.1);
+}
+.label {
+    width: 48%;
+    margin-top:15px;
+    padding-left:10px;
+    font-size: 20px;
+}
+/* Input Box Focus Styling */
+.input-box:focus {
+    border-color: #4CAF50;
+    box-shadow: 0 0 7px rgba(0, 128, 0, 0.7); /* Green shadow for focus */
+    outline: none;         /* Removes default focus outline */}
+</style>
+<body>
+<div class="box"style="background-color:lavender;">
+<table width=100%>
+<tr>
+    <td width=10%>
+    <h1 onclick="toggleSidebar()" style="margin-left:2%;">☰</h1></td>
+<td width=80% align=center><h1><i>Tarzen The Online Mall</i></h1></td>
+{% if session.get('login') %}
+    <td width=50%><lable><div style="font-size:20px;"><a href="/logout">Logout</a></div></label></td>
+ {% elif not session.get('login') %}
+ <td width=50%><lable><div style="font-size:20px;"><a href="/login">Login</a></div></label></td>
+{% endif %}
+</tr>
+</table>
+</div>
+
+
+  <div class="sidebar" id="sidebar">
+    <ul>
+            <li><button class="toggle-btn" onclick="toggleSidebar()">Close</button></li>
+            <li><i class="fas fa-home"></i><span><a href="/home">Home</a></span></li>
+      {%if (session.get('user_type')=='admin')%}
+      <li><i class="fas fa-home"></i><span><a href="/add-product">Add Products</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/add-adds">Add Adds</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href='/select/product'>Select Products</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/orders'>Select Orders</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/user'>Select Users</a></span></li>
+      {%elif (session.get('user_type')=='user')%}
+      
+      
+      <li><i class="fas fa-home"></i><span><a href="/select/cart">Cart</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/select/orders">Orders</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/update_info">Update Info</a></span></li>
+      
+      
+      {%endif%}
+      
+    </ul>
+  
+  </div>
+
+<br>
+  <h2 style="margin-top:auto; text-align:center;"><i><b>Buy Product</b></i></h2>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="flash-message flash-{{ category }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<form method="POST" action="/buy/{{data.pid}}">
+{% if data %}
+    <div class="row">
+    <label class="label">Product Name:</label>
+    <label class="label">Product Category:</label>
+    </div>
+    <div class="row">
+    <input type="number" name="pname" class="input-box" value="{{ data.pid }}" readonly>
+    <input type="text" name="pcategory" class="input-box" value="{{ data.pcategory }}" readonly>
+    </div>
+    
+    <div class="row">
+    <label class="label">Price:</label>
+    <label class="label">Discount:</label>
+    </div>
+    <div class="row">
+    <input type="number" name="price" class="input-box" value="{{ data.price }}" readonly>
+    <input type="number" name="discount" class="input-box" value="{{ data.discount }}" readonly>
+    </div>
+{% endif%}    
+    <div class="row">
+    <label class="label">Stock:</label>
+    <label class="label">Total Amount:</label>
+    </div>
+    <div class="row">
+    <input type="number" name="stock" class="input-box" placeholder="Stock"required>
+    <input type="number" name="amount" class="input-box" placeholder="Amount"readonly>
+    </div>
+    
+
+    <div class="w3-container">
+        <div class="input-container">
+        <input type="submit" value="Submit"style="margin-bottom:10px;">
+        </div>
+     
+</div>
+</form>
+<footer claas='box'>
+  &copy; {{year}} Tarzan the online mall. All Rights Reserved.<br>Created by Shivraj Patil.
+</footer>
+</div>
+</body><script src="{{ url_for('static', filename='main1.js') }}"></script>
+<script>
+setTimeout(() => {
+    document.querySelectorAll('.flash-message')
+        .forEach(msg => msg.remove());
+}, 3000);
+
+
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const priceInput = document.querySelector('input[name="price"]');
+    const discountInput = document.querySelector('input[name="discount"]');
+    const stockInput = document.querySelector('input[name="stock"]');
+    const amountInput = document.querySelector('input[name="amount"]');
+
+    stockInput.addEventListener("input", function () {
+        let price = parseFloat(priceInput.value) || 0;
+        let discount = parseFloat(discountInput.value) || 0;
+        let stock = parseFloat(stockInput.value) || 0;
+
+        let amount = (price-(price * discount) / 100) * stock;
+        amountInput.value = amount.toFixed(2); // 2 decimal places
+    });
+});
+</script>
+
+</html>

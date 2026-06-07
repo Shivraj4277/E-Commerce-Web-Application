@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+            <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+
+    <title>Data</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='main1.css') }}">
+
+    <style>
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            border-radius: 8px;
+        }
+
+        /* Table */
+        .table {
+            width: 100%;
+            min-width: 900px;
+            border-collapse: collapse;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        /* Header */
+        th {
+            background: #2c3e50;
+            color: #fff;
+            padding: 10px;
+            font-size: 14px;
+            border-bottom: 2px solid #1a252f;
+        }
+
+        /* Cells */
+        .td {
+            padding: 8px;
+            font-size: 13px;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+        }
+
+        /* Vertical borders */
+        th, .td {
+            border-right: 1px solid #ddd;
+        }
+
+        th:last-child,
+        .td:last-child {
+            border-right: none;
+        }
+
+        /* Row hover effect */
+        .tr:hover .td {
+            background-color: #f5f8fa;
+        }
+        #container {
+    width: 90%;
+    max-width: 600px;
+    margin: 10px auto;
+    border:1px black solid;
+    border-radius: 8px;
+    box-shadow: 0 0 10px #ccc;
+}
+         /*Mobile */
+        @media (max-width: 768px) {
+            th, .td {
+                font-size: 12px;
+            }
+        }
+       
+        button.form-btn {
+    width: 100%;
+    margin-top:25%;
+    padding:5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    box-shadow: 1px 2px 7px rgba(0, 0, 0, 0.1);
+}
+button.form-btn:first-of-type {
+    margin-top: 0;
+}
+
+    </style>
+</head>
+
+<body>
+
+
+
+<div class="box"style="background-color:lavender;">
+<table width=100%>
+<tr>
+    <td width=10%>
+    <h1 onclick="toggleSidebar()" style="margin-left:2%;">☰</h1></td>
+<td width=80% align=center><h1><i>Tarzen The Online Mall</i></h1></td>
+{% if session.get('login') %}
+    <td width=50%><lable><div style="font-size:20px;"><a href="/logout">Logout</a></div></label></td>
+ {% elif not session.get('login') %}
+ <td width=50%><lable><div style="font-size:20px;"><a href="/login">Login</a></div></label></td>
+{% endif %}
+</tr>
+</table>
+</div>
+
+
+  <div class="sidebar" id="sidebar">
+    <ul>
+            <li><button class="toggle-btn" onclick="toggleSidebar()">Close</button></li>
+            <li><i class="fas fa-home"></i><span><a href="/home">Home</a></span></li>
+      {%if (session.get('user_type')=='admin')%}
+      <li><i class="fas fa-home"></i><span><a href="/add-product">Add Products</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/add-adds">Add Adds</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href='/select/product'>Select Products</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/orders'>Select Orders</a></span></li>
+      <li><i class="fas fa-user"></i><span><a href='/select/user'>Select Users</a></span></li>
+      {%elif (session.get('user_type')=='user')%}
+      
+      <li><i class="fas fa-home"></i><span><a href="/select/cart">Cart</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/select/orders">Current Orders</a></span></li>
+      <li><i class="fas fa-home"></i><span><a href="/update_info">Update Info</a></span></li>
+      {%endif%}
+    </ul>
+  
+  </div>
+
+<div class="container">
+    <div class="w3-container">
+    <div class="input-container">
+      <!-- Search input -->
+      <input type="text" placeholder="Search Product.." id="myInput" onkeyup="myFunction1()" class="input-box">
+    </div>
+	</div>    
+</div>
+  
+  
+{% if products%}
+<br>
+<h2 style="margin-top:auto; text-align:center;"><i><b>{{table[0]|upper}}{{table[1:]}}</b></i></h2>
+
+
+<div class="table-responsive">
+    <table class='table' id="myTable">
+        <!-- Dynamically generate table headers -->
+        <tr class='tr'>
+            {% for key, value in products[0].items() %}
+            {% if key !='discription'%}
+            {%if key not in ('pid','uid','oid','status') and (session.get('user_type')=='user')%}
+            {% if not(key in ('date','stock') and table !='orders')%}
+                <th>{{ key.replace('_', ' ').capitalize() }}</th>
+                {%endif%}
+            {%elif key not in ('password','recommand','status') and session.get('user_type')=='admin'%}
+            <th>{{ key.replace('_', ' ').capitalize() }}</th>
+            {%endif%}
+            {%endif%}
+            {% endfor %}
+            {% if table in ('product','cart','orders')%}
+            
+            <th>Action</th>
+            {%endif%}
+            
+            
+        </tr>
+
+        <!-- Dynamically generate table rows -->
+        {% for i in products %}
+        <tr class='tr'>
+            {% for key, value in i.items() %}
+                <!-- Special handling for description field -->
+              {% if key !='discription'%}
+                    {%if key not in ('pid','uid','oid','status') and (session.get('user_type')=='user')%}
+            {% if not(key in('date','stock') and table !='orders')%}
+                <td class='td'>{{ value if value is not none else '-' }}</td>
+                {%endif%}
+            {%elif key not in ('password','status','recommand') and session.get('user_type')=='admin'%}
+            <td class='td'>{{ value if value is not none else '-' }}</td>
+            {%endif%}
+            
+                {%endif%}
+            {% endfor %}
+            {% if table in ('cart','product','orders')%}
+            
+            <td class='td'>
+            {% if table =='product'%}<button class="form-btn"><a href='/stock/{{i.pid}}'>Add Stock</a></button>
+         
+            {%endif%}
+            
+            {% if (session.get('user_type')=='user' and table in('orders','cart'))or session.get('user_type')=='admin' and table=='product' %}
+            <button class="form-btn"><a href='/info/{{i.pid}}'>See Info</a></button>
+            
+            {%endif%}
+            
+            {% if session.get('user_type')=='admin' and table=='orders' and i.status=='no'%}
+            <button class="form-btn"><a href="{{url_for('update', name=table,uid=i.uid,status='status',oid=i.oid)}}">Accept</a></button>
+            
+            
+            {%elif session.get('user_type')=='admin' and table=='orders' and i.status=='yes'%}
+            <button class="form-btn"><a href="{{url_for('update', name=table,uid=i.uid,status='delivered',oid=i.oid)}}">Delivered</a></button>
+            {%endif%}
+            
+            
+            {% if not(table=='orders' and session.get('user_type') in('admin','user'))%}
+            
+            <button class="form-btn"><a href='/del/{{table}}/{{i.pid}}/{{session.get("user_id")}}'>Delete</a></button>
+            
+            {% elif (table=='orders' and session.get('user_type')=='user' and i.status!='yes') or table=='orders' and session.get('user_type')=='admin' %}
+            
+            <button class="form-btn"><a href='{{url_for("delproduct",name=table,pid=i.pid,uid=i.oid)}}'>Delete</a></button>
+            
+            
+            
+            {%endif%}
+            </td>
+            
+            {%endif%}
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{%endif%}
+
+
+
+<footer class='box'>
+  &copy; {{year}} Tarzan the online mall. All Rights Reserved.<br>Created by Shivraj Patil.
+</footer>
+</div>
+</body>
+<script src="{{ url_for('static', filename='main1.js') }}"></script>
+</html>
