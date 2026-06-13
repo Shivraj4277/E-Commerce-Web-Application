@@ -34,12 +34,17 @@ A full-stack E-Commerce web application built using Flask. This project was deve
 ecommerce-flask/
 │
 ├── static/
-│   ├── css/
-│   ├── js/
-│   └── images/
-│
+│   ├── main1css
+│   ├── main1.js
+│   ├── adds/
+│   └── product/
+│      ├── 1/
+│      ├── 2/
+│      ...
+│      ├── 14/
+│      └── 15/
 ├── templates/
-│   ├── index.html
+│   ├── home.html
 │   ├── login.html
 │   ├── register.html
 │   ├── cart.html
