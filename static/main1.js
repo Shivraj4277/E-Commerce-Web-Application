@@ -116,37 +116,39 @@ function myFunction1() {
   }
 }
 
-/// Function to filter table rows based on input and show the table when the user types
 function myFunction() {
-var input, filter, table, tr, td, i, txtValue;
-input = document.getElementById('myInput');
-filter = input.value.toUpperCase();
-table = document.getElementById("myTable");
-tr = table.getElementsByTagName("tr");
-//document.write(input,filter,table,tr)
-// Show the table when the user starts typing
-if (input.value.length > 0) {
-  table.style.display = "table"; // Show table when user starts typing
-} 
-else {
-  table.style.display = "none"; // Hide table if input is empty
-}
+    var input, filter, table, tr, td, i, txtValue;
+    var visibleCount = 0;
 
-// Loop through all table rows, starting from 1 (to skip the header row)
-for (i = 0; i < tr.length; i++) {
-  td = tr[i].getElementsByTagName("td")[0]; // Check the name column
+    input = document.getElementById('myInput');
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
 
-  if (td) {
-    txtValue = td.textContent || td.innerText;
-
-    // If the name matches the filter, display the row, else hide it
-    if (txtValue.toUpperCase().indexOf(filter) > -1) {
-      tr[i].style.display = "";
+    if (input.value.length > 0) {
+        table.style.display = "table";
     } else {
-      tr[i].style.display = "none";
+        table.style.display = "none";
+        return;
     }
-  }
-}
+
+    for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+
+        if (td) {
+            txtValue = td.textContent || td.innerText;
+
+            if (
+                txtValue.toUpperCase().indexOf(filter) > -1 &&
+                visibleCount < 5
+            ) {
+                tr[i].style.display = "";
+                visibleCount++;
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
 }
 
 function toggleSidebar() {
