@@ -94,7 +94,7 @@ The primary goal of this project was to:
 - Implement user authentication and session handling
 - Apply software development best practices
   
-## 🎯 Learning Outcomes
+## 🎓 Learning Outcomes
 
 Through this project, I learned:
 
@@ -114,9 +114,9 @@ Through this project, I learned:
 
 ## 👨‍💻 Author
 
-**Your Name**
+**Shivraj Patil**
 
-GitHub: https://github.com/your-username
+GitHub: https://github.com/Shivraj4277
 
 LinkedIn: https://linkedin.com/in/your-profile
 
