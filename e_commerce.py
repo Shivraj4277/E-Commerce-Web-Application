@@ -156,9 +156,9 @@ def logout():
 
 @app.route("/add-product", methods=["POST","GET"])
 def add_product():
-    if request.method == 'POST':
+    if request.method == "POST":
         try:
-            # Get form data
+            # Form data
             name = request.form.get("name")
             category = request.form.get("category")
             company = request.form.get("cname")
@@ -166,11 +166,41 @@ def add_product():
             discount = request.form.get("discount")
             discount_price = request.form.get("discountPrice")
             stock = request.form.get("stock")
+
             descriptions = request.form.getlist("description[]")
             attributes = request.form.getlist("aname[]")
             images = request.files.getlist("description_image[]")
-           
-            # Build product description JSON
+
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            # Pehle product insert karo
+            cursor.execute("""
+                INSERT INTO product
+                (pname, pcategory, company, price, discount,
+                 discount_price, stock, discription, date)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,NOW())
+            """, (
+                name,
+                category,
+                company,
+                price,
+                discount,
+                discount_price,
+                stock,
+                "{}"  # temporary JSON
+            ))
+
+            conn.commit()
+
+            # New product ID
+            product_id = cursor.lastrowid
+
+            # Product folder create
+            product_folder = os.path.join(UPLOAD_FOLDER, str(product_id))
+            os.makedirs(product_folder, exist_ok=True)
+
+            # Description JSON
             product_description = {
                 "main": {
                     "description": descriptions[0] if descriptions else "",
@@ -179,46 +209,64 @@ def add_product():
                 "attributes": []
             }
 
-            #main_image_count = len(images) - len(attributes)
             main_image_count = max(1, len(images) - len(attributes))
 
-
-            # Main images
-            for i in range(main_image_count):
+            # Main images save
+            for i in range(min(main_image_count, len(images))):
                 img = images[i]
-                if img.filename:
-                    filename = secure_filename(img.filename)
-                    img.save(os.path.join(UPLOAD_FOLDER, filename))
-                    product_description["main"]["images"].append(filename)
 
-            # Attribute images
+                if img and img.filename:
+                    filename = (
+                        f"{uuid.uuid4().hex}_"
+                        f"{secure_filename(img.filename)}"
+                    )
+
+                    img.save(os.path.join(product_folder, filename))
+
+                    product_description["main"]["images"].append(
+                        f"{product_id}/{filename}"
+                    )
+
+            # Attribute images save
             img_index = main_image_count
+
             for i, attr in enumerate(attributes):
+
+                image_path = ""
+
                 if img_index < len(images):
                     img = images[img_index]
-                    filename = secure_filename(img.filename)
-                    img.save(os.path.join(UPLOAD_FOLDER, filename))
-                    product_description["attributes"].append({
-                        "name": attr,
-                        "description": descriptions[i + 1] if i + 1 < len(descriptions) else "",
-                        "image": filename
-                    })
+
+                    if img and img.filename:
+                        filename = (
+                            f"{uuid.uuid4().hex}_"
+                            f"{secure_filename(img.filename)}"
+                        )
+
+                        img.save(os.path.join(product_folder, filename))
+
+                        image_path = f"{product_id}/{filename}"
+
                     img_index += 1
+
+                product_description["attributes"].append({
+                    "name": attr,
+                    "description": descriptions[i + 1]
+                    if i + 1 < len(descriptions) else "",
+                    "image": image_path
+                })
 
             description_json = json.dumps(product_description)
 
-            # Insert into DB
-            conn = get_db_connection()
-            cursor = conn.cursor(dictionary=True)
+            # Description update karo
             cursor.execute("""
-                INSERT INTO product 
-                (pname, pcategory, company, price, discount, discount_price, stock, discription, date)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,now())
-            """, (
-                name, category, company, price, discount,
-                discount_price, stock, description_json
-            ))
+                UPDATE product
+                SET discription = %s
+                WHERE pid = %s
+            """, (description_json, product_id))
+
             conn.commit()
+
             cursor.close()
             conn.close()
 
@@ -226,9 +274,9 @@ def add_product():
             return redirect("/add-product")
 
         except Exception as e:
-            flash("Product already exists or some error occurred.", "danger")
+            print("ERROR:", e)
+            flash(f"Error: {str(e)}", "danger")
             return redirect("/add-product")
-
     # GET request
     return render_template("add_pro.html")
         
