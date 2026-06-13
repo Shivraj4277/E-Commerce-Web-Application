@@ -1,4 +1,4 @@
-# E-Commerce-Web-Application
+
 # 🛒 E-Commerce Web Application
 
 A full-stack E-Commerce web application built using Flask. This project was developed as part of my learning journey in Data Science and Machine Learning to strengthen my understanding of web development, database management, and user-centric application design.The application provides a simple online shopping experience where users can browse products, manage their cart, and place orders.
@@ -46,9 +46,15 @@ ecommerce-flask/
 ├── templates/
 │   ├── home.html
 │   ├── login.html
-│   ├── register.html
-│   ├── cart.html
-│   └── products.html
+│   ├── createaccount.html
+│   ├── buy.html
+│   ├── add_pro.html
+│   ├── demo.html
+│   ├── seeinfo.html
+│   ├── update_info.html
+│   ├── update_stock.html
+│   ├── forgot.html
+│   └── add_ads.html
 │
 ├── app.py
 ├── requirements.txt
@@ -123,7 +129,7 @@ Through this project, I learned:
 
 GitHub: https://github.com/Shivraj4277
 
-LinkedIn: https://linkedin.com/in/your-profile
+LinkedIn: https://in.linkedin.com/in/shivraj-patil-9b214b355
 
 ---
 
