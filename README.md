@@ -31,7 +31,7 @@ A full-stack E-Commerce web application built using Flask. This project was deve
 ## 📂 Project Structure
 
 ```text
-ecommerce-flask/
+E-Ccommerce-Web-Application/
 │
 ├── static/
 │   ├── main1css
@@ -91,6 +91,7 @@ http://127.0.0.1:5000
 
 Add screenshots of:
 - Home Page
+  ![Logo](images%20for%20readme%20file/Home%20Page%201.png)
 - Product Listing Page
 - Shopping Cart
 - User Login/Register Page
