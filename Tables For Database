@@ -1,0 +1,51 @@
+CREATE TABLE `user` (
+    uid INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    mobileno VARCHAR(15) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    pin VARCHAR(10),
+    address TEXT,
+    password VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE admin (
+    ano INT AUTO_INCREMENT PRIMARY KEY,
+    mobileno VARCHAR(15) NOT NULL UNIQUE
+);
+
+
+CREATE TABLE product (
+    pid INT AUTO_INCREMENT PRIMARY KEY,
+    pname VARCHAR(150) NOT NULL,
+    pcategory VARCHAR(100) NOT NULL,
+    company VARCHAR(100),
+    price DECIMAL(10,2) NOT NULL,
+    discount DECIMAL(5,2) DEFAULT 0,
+    discount_price DECIMAL(10,2),
+    stock INT DEFAULT 0,
+    discription JSON,
+    date DATETIME NOT NULL
+);
+
+
+CREATE TABLE orders (
+    oid INT AUTO_INCREMENT PRIMARY KEY,
+    uid INT NOT NULL,
+    pid INT NOT NULL,
+    stock INT DEFAULT 1,
+    amount DECIMAL(10,2) NOT NULL,
+    status VARCHAR(50),
+    date DATETIME NOT NULL,
+    FOREIGN KEY (uid) REFERENCES `user`(uid),
+    FOREIGN KEY (pid) REFERENCES product(pid)
+);
+
+
+create table cart(
+    cid int primary key auto_increment,
+    pid int not null,uid int not null,
+    added_at varchar(20) not null ,
+    foreign key(pid) references product(pid),
+    foreign key(uid) references user(uid)
+);
