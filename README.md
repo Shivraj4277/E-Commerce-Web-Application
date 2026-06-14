@@ -31,7 +31,7 @@ A full-stack E-Commerce web application built using Flask. This project was deve
 ## 📂 Project Structure
 
 ```text
-E-Ccommerce-Web-Application/
+E-Commerce-Web-Application/
 │
 ├── static/
 │   ├── main1css
