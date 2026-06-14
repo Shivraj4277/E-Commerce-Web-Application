@@ -90,11 +90,32 @@ http://127.0.0.1:5000
 ## 📸 Application Preview
 
 Add screenshots of:
+
 - Home Page
+  
   ![Logo](images%20for%20readme%20file/Home%20Page%201.png)
-- Product Listing Page
-- Shopping Cart
+
+  ![Logo](images%20for%20readme%20file/Home%20Page%202.png)
+  
+
 - User Login/Register Page
+
+  ![Logo](images%20for%20readme%20file/Login%20Page.png)
+  
+  ![Logo](images%20for%20readme%20file/Registration%20Page.png)
+
+- Product Listing Page
+
+  ![Logo](images%20for%20readme%20file/Product%20List.png)
+  
+- Product Information Page
+  
+  ![Logo](images%20for%20readme%20file/Product%20Info.%20Page%201.png)
+
+  ![Logo](images%20for%20readme%20file/Product%20Info.%20Page%202.png)
+
+  ![Logo](images%20for%20readme%20file/Product%20Info.%20Page%203.png)
+  
 
 ## 🎯 Project Objectives
 
